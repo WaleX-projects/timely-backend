@@ -1,0 +1,20 @@
+# --- AI & Image Processing ---
+insightface==0.7.3
+onnxruntime==1.15.1
+opencv-python-headless==4.8.0.74
+chromadb==0.4.15
+numpy==1.24.3
+
+# --- Django Web Framework ---
+Django==4.2.27
+django-cors-headers==4.9.0
+djangorestframework==3.16.1
+djangorestframework_simplejwt==5.5.1
+
+# --- Server & Production ---
+gunicorn==21.2.0
+python-dotenv==1.0.0
+
+
+# --- Database ---
+psycopg2-binary==2.9.9  # Required if using PostgreSQL on the server
