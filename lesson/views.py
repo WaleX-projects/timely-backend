@@ -3,21 +3,28 @@ import cv2
 import numpy as np
 from django.conf import settings
 from rest_framework import viewsets
-from rest_framework.decorators import api_view, parser_classes
+from rest_framework.decorators import api_view, parser_classes,permission_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from insightface.app import FaceAnalysis
-
+from rest_framework import generics
+from django.contrib.auth.models import User
 from .models import Classroom, StudentFace,StudentAttendance
-from .serializers import ClassroomSerializer, StudentFaceSerializer
+from .serializers import ClassroomSerializer, StudentFaceSerializer,RegisterSerializer,UserSerializer,StudentAttendanceSerializer
 from .vectordb_client import add_face_to_db, search_face
 from datetime import date 
-
+from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
 
 # --- 1. ViewSets ---
 class ClassroomViewSet(viewsets.ModelViewSet):
     queryset = Classroom.objects.all()
     serializer_class = ClassroomSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_create(self,serializer):
+
+        serializer.save(teacher = self.request.user)
+    
 
 # --- 2. Model Initialization ---
 model_path = os.path.join(settings.BASE_DIR, 'my_models')
@@ -61,6 +68,8 @@ def register_face(request):
     return Response(response)
 
 # --- 4. Attendance View ---
+
+
 
 @api_view(['POST'])
 @parser_classes([MultiPartParser, FormParser])
@@ -126,3 +135,30 @@ def get_faces(request):
             return Response({"status": "error", "message": "Student recognized by AI but missing in database"}, status=404)
     
     return Response({"status": "error", "message": "Identity not verified"}, status=401)
+
+# for geristering new lecturer
+class RegisterViewSet(generics.CreateAPIView):
+    query = User.objects.all()
+    serializer_class = RegisterSerializer
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_data(request):
+    #print('user_data:',request.user )
+    
+    serializer = UserSerializer(request.user)
+    print('user_data:',serializer )
+   
+    return Response(serializer.data)
+
+
+class StudentAttendanceViewSet(viewsets.ModelViewSet):
+    queryset = StudentAttendance.objects.all()
+    serializer_class = StudentAttendanceSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Return all attendance records (or filter by user if needed)
+        return StudentAttendance.objects.all()

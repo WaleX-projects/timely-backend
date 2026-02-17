@@ -1,18 +1,34 @@
+
 # app/models.py
 from django.db import models
 from django.contrib.postgres.fields import ArrayField  # works well with Postgres
 import json
+from django.contrib.auth.models import User 
+from django.db import models
+from django.contrib.auth.models import User
+
 class Classroom(models.Model):
+    # Using a CharField for ID if you are generating custom strings in JS, 
+    # otherwise, Django's default AutoField is usually better.
+
+    
     name = models.CharField(max_length=255, help_text="Name of the class or course")
     room = models.CharField(max_length=50, blank=True, help_text="Room number or identifier")
     building = models.CharField(max_length=255, blank=True, help_text="Building or block name")
+    
+    # Coordinates and Radius
     latitude = models.FloatField(help_text="Classroom latitude")
     longitude = models.FloatField(help_text="Classroom longitude")
-    radius_m = models.FloatField(default=50, help_text="Allowed radius in meters for attendance")
+    radius_m = models.IntegerField(default=50, help_text="Allowed radius in meters")
+    
+    # Time fields (Ensure JS sends "HH:MM" or "HH:MM:SS" format)
     time_start = models.TimeField(help_text="Class start time")
     time_end = models.TimeField(help_text="Class end time")
     
-    teacher = models.CharField(max_length=255, blank=True, help_text="Teacher name or ID")
+    # Teacher: If JS sends a username or ID, your view logic will need to 
+    # map that string to this ForeignKey.
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name="classrooms")
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -22,8 +38,6 @@ class Classroom(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.room})"
-
-
 # app/models.py
 
 

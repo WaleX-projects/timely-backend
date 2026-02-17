@@ -1,9 +1,9 @@
 # --- AI & Image Processing ---
 insightface==0.7.3
-onnxruntime==1.15.1
+onnxruntime==1.19.2
 opencv-python-headless==4.8.0.74
-chromadb==0.4.15
-numpy==1.24.3
+chromadb==1.4.1
+numpy==1.26.4
 
 # --- Django Web Framework ---
 Django==4.2.27
@@ -14,7 +14,11 @@ djangorestframework_simplejwt==5.5.1
 # --- Server & Production ---
 gunicorn==21.2.0
 python-dotenv==1.0.0
-
+whitenoise==6.6.0          # Required for serving static files on Fly.io
 
 # --- Database ---
-psycopg2-binary==2.9.9  # Required if using PostgreSQL on the server
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0     # Required to parse Fly.io's DATABASE_URL string
+
+# --- Utilities ---
+requests==2.31.0           # Useful for external API calls

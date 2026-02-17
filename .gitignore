@@ -1,2 +1,6 @@
 envo_db/
 db.sqlite3
+my_models/
+docker-compose.yml
+Dockerfile
+.dockerignore
