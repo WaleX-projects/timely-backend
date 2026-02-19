@@ -3,7 +3,7 @@ insightface==0.7.3
 onnxruntime==1.19.2
 opencv-python-headless==4.8.0.74
 chromadb==1.4.1
-numpy==1.26.4
+
 
 # --- Django Web Framework ---
 Django==4.2.27
